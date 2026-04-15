@@ -1,0 +1,21 @@
+services:
+  app:
+    build: .
+    container_name: fallback-python-app
+    ports:
+      - "8000:8000"
+    environment:
+      PRIMARY_URL: https://jsonplaceholder.typicode.com/todos
+      FALLBACK_URL: https://dummyjson.com/todos
+      REQUEST_TIMEOUT: 5
+      PORT: 8000
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: fallback-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - app
